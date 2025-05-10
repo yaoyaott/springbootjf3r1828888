@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.ShoujiDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.ShoujiEntity" id="shoujiMap">
+        <result property="title" column="title"/>
+        <result property="picture" column="picture"/>
+        <result property="price" column="price"/>
+        <result property="realsales" column="realsales"/>
+        <result property="shopname" column="shopname"/>
+        <result property="jcolor" column="jcolor"/>
+        <result property="ccsize" column="ccsize"/>
+        <result property="xinghao" column="xinghao"/>
+        <result property="pinpai" column="pinpai"/>
+        <result property="fenbianlv" column="fenbianlv"/>
+        <result property="bianhao" column="bianhao"/>
+        <result property="laiyuan" column="laiyuan"/>
+        <result property="thumbsupnum" column="thumbsupnum"/>
+        <result property="crazilynum" column="crazilynum"/>
+        <result property="discussnum" column="discussnum"/>
+        <result property="storeupnum" column="storeupnum"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.ShoujiVO" >
+		SELECT * FROM shouji  shouji         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.ShoujiVO" >
+		SELECT  shouji.* FROM shouji  shouji 	
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.ShoujiView" >
+
+		SELECT  shouji.* FROM shouji  shouji 	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.ShoujiView" >
+		SELECT * FROM shouji  shouji <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+
+    <select id="selectValue" resultType="map" >
+        SELECT ${params.xColumn}, ROUND(sum(${params.yColumn}),1) total FROM shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.xColumn}
+    </select>
+
+    <select id="selectTimeStatValue" resultType="map" >
+        <if test = 'params.timeStatType == "日"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m-%d') ${params.xColumn}, sum(${params.yColumn}) total FROM shouji
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m-%d')
+        </if>
+        <if test = 'params.timeStatType == "月"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m') ${params.xColumn}, sum(${params.yColumn}) total FROM shouji
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m')
+        </if>
+        <if test = 'params.timeStatType == "年"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y') ${params.xColumn}, sum(${params.yColumn}) total FROM shouji
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y')
+        </if>
+    </select>
+
+    <select id="selectGroup" resultType="map" >
+        SELECT ${params.column} , count(1) total FROM shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.column}
+    </select>
+
+    <select id="priceSectionStat" resultType="map" >
+        SELECT '一千以下' as price,case when t.一千以下 is null then 0 else t.一千以下 end total
+        from
+        (select
+        sum(case when price >= 0 and price &lt;= 100 then 1 else 0 end) as 一千以下,        sum(case when price >= 1001 and price &lt;= 2000 then 1 else 0 end) as 一千到两千,        sum(case when price >= 2001 and price &lt;= 4000 then 1 else 0 end) as 两千到四千,        sum(case when price >= 4001 and price &lt;= 6000 then 1 else 0 end) as 四千到六千,        sum(case when price >= 6001 then 1 else 0 end) as 六千以上        from shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        ) t
+        union all
+        SELECT '一千到两千' as price,case when t.一千到两千 is null then 0 else t.一千到两千 end total
+        from
+        (select
+        sum(case when price >= 0 and price &lt;= 100 then 1 else 0 end) as 一千以下,        sum(case when price >= 1001 and price &lt;= 2000 then 1 else 0 end) as 一千到两千,        sum(case when price >= 2001 and price &lt;= 4000 then 1 else 0 end) as 两千到四千,        sum(case when price >= 4001 and price &lt;= 6000 then 1 else 0 end) as 四千到六千,        sum(case when price >= 6001 then 1 else 0 end) as 六千以上        from shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        ) t
+        union all
+        SELECT '两千到四千' as price,case when t.两千到四千 is null then 0 else t.两千到四千 end total
+        from
+        (select
+        sum(case when price >= 0 and price &lt;= 100 then 1 else 0 end) as 一千以下,        sum(case when price >= 1001 and price &lt;= 2000 then 1 else 0 end) as 一千到两千,        sum(case when price >= 2001 and price &lt;= 4000 then 1 else 0 end) as 两千到四千,        sum(case when price >= 4001 and price &lt;= 6000 then 1 else 0 end) as 四千到六千,        sum(case when price >= 6001 then 1 else 0 end) as 六千以上        from shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        ) t
+        union all
+        SELECT '四千到六千' as price,case when t.四千到六千 is null then 0 else t.四千到六千 end total
+        from
+        (select
+        sum(case when price >= 0 and price &lt;= 100 then 1 else 0 end) as 一千以下,        sum(case when price >= 1001 and price &lt;= 2000 then 1 else 0 end) as 一千到两千,        sum(case when price >= 2001 and price &lt;= 4000 then 1 else 0 end) as 两千到四千,        sum(case when price >= 4001 and price &lt;= 6000 then 1 else 0 end) as 四千到六千,        sum(case when price >= 6001 then 1 else 0 end) as 六千以上        from shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        ) t
+        union all
+        SELECT '六千以上' as price,case when t.六千以上 is null then 0 else t.六千以上 end total
+        from
+        (select
+        sum(case when price >= 0 and price &lt;= 100 then 1 else 0 end) as 一千以下,        sum(case when price >= 1001 and price &lt;= 2000 then 1 else 0 end) as 一千到两千,        sum(case when price >= 2001 and price &lt;= 4000 then 1 else 0 end) as 两千到四千,        sum(case when price >= 4001 and price &lt;= 6000 then 1 else 0 end) as 四千到六千,        sum(case when price >= 6001 then 1 else 0 end) as 六千以上        from shouji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        ) t
+    </select>
+
+
+
+</mapper>
