@@ -29,7 +29,7 @@ public class HadoopConfig {
     public FileSystem createFs() throws Exception {
         //读取配置文件
         org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
-        conf.set("fs.defalutFS", nameNode);
+        conf.set("fs.defaultFS", nameNode);
         conf.set("dfs.replication", "3");
         URI uri = new URI(nameNode.trim());
         FileSystem fs = FileSystem.get(uri,conf,"root");

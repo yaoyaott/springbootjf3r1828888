@@ -2,6 +2,7 @@
 package com.service.impl;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,10 @@ public class UsersServiceImpl extends ServiceImpl<UsersDao, UsersEntity> impleme
 	@Override
 	public PageUtils queryPage(Map<String, Object> params) {
 		Page<UsersEntity> page = this.selectPage(
-                new Query<UsersEntity>(params).getPage(),
-                new EntityWrapper<UsersEntity>()
-        );
-        return new PageUtils(page);
+				new Query<UsersEntity>(params).getPage(),
+				new EntityWrapper<UsersEntity>()
+		);
+		return new PageUtils(page);
 	}
 
 	@Override
@@ -40,10 +41,23 @@ public class UsersServiceImpl extends ServiceImpl<UsersDao, UsersEntity> impleme
 
 	@Override
 	public PageUtils queryPage(Map<String, Object> params,
-			Wrapper<UsersEntity> wrapper) {
-		 Page<UsersEntity> page =new Query<UsersEntity>(params).getPage();
-	        page.setRecords(baseMapper.selectListView(page,wrapper));
-	    	PageUtils pageUtil = new PageUtils(page);
-	    	return pageUtil;
+							   Wrapper<UsersEntity> wrapper) {
+		Page<UsersEntity> page = new Query<UsersEntity>(params).getPage();
+		page.setRecords(baseMapper.selectListView(page, wrapper));
+		PageUtils pageUtil = new PageUtils(page);
+		return pageUtil;
 	}
-}
+
+
+		// 其他已有方法...
+		@Override
+		public Map<String, Integer> getUserCountByRole() {
+			List<UsersEntity> users = this.selectList(new EntityWrapper<>());
+			Map<String, Integer> userCountByRole = new HashMap<>();
+			for (UsersEntity user : users) {
+				String role = user.getRole();
+				userCountByRole.put(role, userCountByRole.getOrDefault(role, 0) + 1);
+			}
+			return userCountByRole;
+		}
+	}

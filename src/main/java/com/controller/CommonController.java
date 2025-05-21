@@ -49,8 +49,8 @@ public class CommonController{
     private ConfigService configService;    
 	/**
 	 * 获取table表中的column列表(联动接口)
-	 * @param table
-	 * @param column
+	 * @paramtable
+	 * @paramcolumn
 	 * @return
 	 */
 	@IgnoreAuth
@@ -77,8 +77,8 @@ public class CommonController{
 	
 	/**
 	 * 根据table中的column获取单条记录
-	 * @param table
-	 * @param column
+	 * @paramtable
+	 * @paramcolumn
 	 * @return
 	 */
 	@IgnoreAuth
@@ -94,8 +94,8 @@ public class CommonController{
 	
 	/**
 	 * 修改table表的sfsh状态
-	 * @param table
-	 * @param map
+	 * @paramtable
+	 * @parammap
 	 * @return
 	 */
 	@RequestMapping("/sh/{tableName}")
@@ -107,10 +107,10 @@ public class CommonController{
 	
 	/**
 	 * 获取需要提醒的记录数
-	 * @param tableName
-	 * @param columnName
-	 * @param type 1:数字 2:日期
-	 * @param map
+	 * @paramtableName
+	 * @paramcolumnName
+	 * @paramtype 1:数字 2:日期
+	 * @parammap
 	 * @return
 	 */
 	@IgnoreAuth
@@ -232,9 +232,9 @@ public class CommonController{
     @RequestMapping("/spider/{tableName}")
     public R spider(@PathVariable("tableName") String tableName,HttpServletRequest request) {
         //Linux系统
-        CommonUtil.cmd("cd /yykj/python/9999/spider89b6350z && scrapy crawl "+tableName+"Spider -a databaseName=springbootjf3r1828");
+        //CommonUtil.cmd("cd /yykj/python/9999/spider89b6350z && scrapy crawl "+tableName+"Spider -a databaseName=springbootjf3r1828");
         //Windows系统
-        //CommonUtil.cmd("代码所在的盘: && cd 爬虫代码所在的绝对目录 && scrapy crawl "+tableName+"Spider -a databaseName=springbootjf3r1828");
+        CommonUtil.cmd("D: && cd D:\\毕业设计\\基于Spark的电商用户行为分析系统_jf3r1828 (1)\\spider\\Spider\\spiders\\ShoujiSpider.py && scrapy crawl "+tableName+"Spider -a databaseName=springbootjf3r1828");
         return R.ok();
     }
 

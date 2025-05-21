@@ -21,5 +21,6 @@ public interface UsersService extends IService<UsersEntity> {
    	List<UsersEntity> selectListView(Wrapper<UsersEntity> wrapper);
    	
    	PageUtils queryPage(Map<String, Object> params,Wrapper<UsersEntity> wrapper);
-	   	
+
+    Map<String, Integer> getUserCountByRole();
 }

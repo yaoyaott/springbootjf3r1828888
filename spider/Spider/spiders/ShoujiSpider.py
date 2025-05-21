@@ -1,7 +1,3 @@
-# # -*- coding: utf-8 -*-
-
-# 数据爬取文件
-
 import scrapy
 import pymysql
 import pymssql
@@ -25,6 +21,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 # 手机
 class ShoujiSpider(scrapy.Spider):
+    """
+    定义了一个名为ShoujiSpider的爬虫类，用于爬取手机相关数据。
+    """
     name = 'shoujiSpider'
     spiderUrl = 'https://s.taobao.com/search?q=手机'
     start_urls = spiderUrl.split(";")
@@ -32,13 +31,17 @@ class ShoujiSpider(scrapy.Spider):
     hostname = ''
     realtime = False
 
-
     def __init__(self,realtime=False,*args, **kwargs):
+        """
+        初始化方法，接受一个realtime参数以及额外的参数和关键字参数。
+        """
         super().__init__(*args, **kwargs)
         self.realtime = realtime=='true'
 
     def start_requests(self):
-
+        """
+        爬虫开始请求的方法，根据平台和realtime参数决定是否从数据库读取数据或开始新的请求。
+        """
         plat = platform.system().lower()
         if not self.realtime and (plat == 'linux' or plat == 'windows'):
             connect = self.db_connect()
@@ -66,7 +69,9 @@ class ShoujiSpider(scrapy.Spider):
 
     # 列表解析
     def parse(self, response):
-
+        """
+        解析列表页的方法，提取手机商品的相关信息。
+        """
         _url = urlparse(self.spiderUrl)
         self.protocol = _url.scheme
         self.hostname = _url.netloc
@@ -81,12 +86,9 @@ class ShoujiSpider(scrapy.Spider):
                 return
 
         list = response.css('a.Card--doubleCardWrapper--L2XFE73')
-        
+
         for item in list:
-
             fields = ShoujiItem()
-
-
 
             try:
                 fields["title"] = item.xpath("//div[@class='Title--title--jCOPvpf']/span//text()").extract()[0].strip()
@@ -144,6 +146,9 @@ class ShoujiSpider(scrapy.Spider):
 
     # 详情解析
     def detail_parse(self, response):
+        """
+        解析详情页的方法，提取手机商品的详细信息。
+        """
         fields = response.meta['fields']
 
         try:
@@ -181,6 +186,9 @@ class ShoujiSpider(scrapy.Spider):
 
     # 去除多余html标签
     def remove_html(self, html):
+        """
+        去除HTML标签的方法，返回清理后的文本。
+        """
         if html == None:
             return ''
         pattern = re.compile(r'<[^>]+>', re.S)
@@ -188,6 +196,9 @@ class ShoujiSpider(scrapy.Spider):
 
     # 数据库连接
     def db_connect(self):
+        """
+        数据库连接方法，根据配置返回一个数据库连接对象。
+        """
         type = self.settings.get('TYPE', 'mysql')
         host = self.settings.get('HOST', 'localhost')
         port = int(self.settings.get('PORT', 3306))
@@ -208,6 +219,9 @@ class ShoujiSpider(scrapy.Spider):
 
     # 断表是否存在
     def table_exists(self, cursor, table_name):
+        """
+        检查表是否存在，返回1如果存在，否则返回0。
+        """
         cursor.execute("show tables;")
         tables = [cursor.fetchall()]
         table_list = re.findall('(\'.*?\')',str(tables))
@@ -220,7 +234,9 @@ class ShoujiSpider(scrapy.Spider):
 
     # 数据缓存源
     def temp_data(self):
-
+        """
+        数据缓存方法，将数据从一个表复制到另一个表。
+        """
         connect = self.db_connect()
         cursor = connect.cursor()
         sql = '''

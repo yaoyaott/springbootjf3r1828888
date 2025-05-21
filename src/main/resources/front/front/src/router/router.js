@@ -34,7 +34,14 @@ const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
 	return originalPush.call(this, location).catch(err => err)
 }
-
+const routes = [
+	// 其他已有路由...
+	{
+		path: '/user-analysis', // 访问路径（可自定义）
+		name: 'UserAnalysis', // 路由名称（用于反向导航）
+		component: UserAnalysis // 关联的页面组件
+	}
+];
 //配置路由
 export default new VueRouter({
 	routes:[
